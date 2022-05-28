@@ -15,7 +15,7 @@ type HttpServer struct {
 
 // NewHttpServer New Server constructor
 func NewHttpServer(handler booksadapter.BooksHandler) *HttpServer {
-	return &HttpServer{router: NewMuxRouter(), handler: handler}
+	return &HttpServer{router: newMuxRouter(), handler: handler}
 }
 
 func (s *HttpServer) Run() {

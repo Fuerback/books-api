@@ -1,11 +1,16 @@
 package booksadapter
 
-import "net/http"
+import (
+	"github.com/Fuerback/books-api/internal/app/domain/book"
+	"net/http"
+)
 
-type httpHandler struct{}
+type httpHandler struct {
+	bookService book.Book
+}
 
-func NewHttpHandler() *httpHandler {
-	return &httpHandler{}
+func NewHttpHandler(bookService book.Book) BooksHandler {
+	return &httpHandler{bookService: bookService}
 }
 
 func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {

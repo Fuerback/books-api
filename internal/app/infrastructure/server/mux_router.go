@@ -10,7 +10,7 @@ type muxRouter struct{}
 
 var muxDispatcher = mux.NewRouter()
 
-func NewMuxRouter() Router {
+func newMuxRouter() Router {
 	return &muxRouter{}
 }
 
