@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: Books API
+  version: 1.0.0
+  description: |
+    The **Books API** is a simple CRUD.
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: The error response.
+      properties:
+        messages:
+          type: array
+          items:
+            type: string
+            example: Validation error
+
+    Book:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the book
+          example: The Go Programming Language
+        author:
+          type: string
+          description: The name of the author
+          example: Alan A. A. Donovan / Brian W. Kernighan
+        pages:
+          type: number
+          description: The total number of pages
+          example: 400
+      required:
+        - title
+
+    BookId:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Book unique ID
+          example: 2ced6263-50df-4ca5-a308-d7faf509754d
+      required:
+        - id
+
+    BookDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Book unique ID
+          example: 2ced6263-50df-4ca5-a308-d7faf509754d
+        title:
+          type: string
+          description: Title of the book
+          example: The Go Programming Language
+        author:
+          type: string
+          description: The name of the author
+          example: Alan A. A. Donovan / Brian W. Kernighan
+        pages:
+          type: number
+          description: The total number of pages
+          example: 400
+      required:
+        - id
+        - title
+
+
+
+paths:
+  /v1/books:
+    post:
+      description: |
+        Creates a new book
+      tags:
+        - V1 - Books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookId'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/books/{id}:
+    get:
+      description: |
+        Returns a book
+      tags:
+        - V1 - Books
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The book unique ID
+          schema:
+            type: number
+            example: 123456
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetails'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      description: |
+        Updates a book
+      tags:
+        - V1 - Books
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The book unique ID
+          schema:
+            type: number
+            example: 123456
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetails'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      description: |
+        Deletes a book
+      tags:
+        - V1 - Books
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The book unique ID
+          schema:
+            type: number
+            example: 123456
+
+      responses:
+        '200':
+          description: OK.
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
