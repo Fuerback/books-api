@@ -12,7 +12,7 @@ func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {
 
 }
 
-func (c *httpHandler) Get(resp http.ResponseWriter, r *http.Request) {
+func (c *httpHandler) Read(resp http.ResponseWriter, r *http.Request) {
 
 }
 
