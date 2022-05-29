@@ -2,14 +2,15 @@ package repository
 
 import (
 	"context"
+	"github.com/Fuerback/books-api/internal/app/infrastructure/db"
 )
 
 type bookRepository struct {
-	// db injection
+	dataBase db.DB
 }
 
-func NewBookRepository() RepoBook {
-	return &bookRepository{}
+func NewBookRepository(dataBase db.DB) RepoBook {
+	return &bookRepository{dataBase: dataBase}
 }
 
 func (r *bookRepository) Create(ctx context.Context, book NewBook) error { return nil }
