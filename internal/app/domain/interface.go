@@ -1,4 +1,4 @@
-package book
+package domain
 
 type Book interface {
 	Create(book BookDetail) error

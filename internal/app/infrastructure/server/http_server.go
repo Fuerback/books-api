@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"github.com/Fuerback/books-api/internal/app/adapter/booksadapter"
+	"github.com/Fuerback/books-api/internal/app/adapter/web/handler"
 	"github.com/Fuerback/books-api/internal/app/infrastructure/env"
 	"net/http"
 )
@@ -10,11 +10,11 @@ import (
 // HttpServer struct
 type HttpServer struct {
 	router  Router
-	handler booksadapter.BooksHandler
+	handler handler.BooksHandler
 }
 
 // NewHttpServer New Server constructor
-func NewHttpServer(handler booksadapter.BooksHandler) *HttpServer {
+func NewHttpServer(handler handler.BooksHandler) *HttpServer {
 	return &HttpServer{router: newMuxRouter(), handler: handler}
 }
 

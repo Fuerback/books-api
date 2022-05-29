@@ -1,15 +1,15 @@
-package booksadapter
+package handler
 
 import (
-	"github.com/Fuerback/books-api/internal/app/domain/book"
+	"github.com/Fuerback/books-api/internal/app/domain"
 	"net/http"
 )
 
 type httpHandler struct {
-	bookService book.Book
+	bookService domain.Book
 }
 
-func NewHttpHandler(bookService book.Book) BooksHandler {
+func NewHttpHandler(bookService domain.Book) BooksHandler {
 	return &httpHandler{bookService: bookService}
 }
 

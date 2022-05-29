@@ -1,4 +1,4 @@
-package booksadapter
+package handler
 
 import "net/http"
 

@@ -1,11 +1,13 @@
-package book
+package domain
+
+import "github.com/Fuerback/books-api/internal/app/adapter/repository"
 
 type bookService struct {
-	// db
+	repo repository.Book
 }
 
-func NewService() Book {
-	return &bookService{}
+func NewService(repo repository.Book) Book {
+	return &bookService{repo: repo}
 }
 
 func (s *bookService) Create(book BookDetail) error {

@@ -1,4 +1,4 @@
-package book
+package domain
 
 type BookDetail struct {
 	ID     string
