@@ -23,7 +23,7 @@ func (r *muxRouter) POST(uri string, f func(resp http.ResponseWriter, r *http.Re
 }
 
 func (r *muxRouter) PATCH(uri string, f func(resp http.ResponseWriter, r *http.Request)) {
-	muxDispatcher.HandleFunc(uri, f).Methods("PUT")
+	muxDispatcher.HandleFunc(uri, f).Methods("PATCH")
 }
 
 func (r *muxRouter) DELETE(uri string, f func(resp http.ResponseWriter, r *http.Request)) {
