@@ -64,11 +64,11 @@ func (mr *MockBookMockRecorder) Delete(ctx, bookID interface{}) *gomock.Call {
 }
 
 // Read mocks base method.
-func (m *MockBook) Read(ctx context.Context, bookID string) (error, domain.BookDetail) {
+func (m *MockBook) Read(ctx context.Context, bookID string) (domain.BookDetails, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Read", ctx, bookID)
-	ret0, _ := ret[0].(error)
-	ret1, _ := ret[1].(domain.BookDetail)
+	ret0, _ := ret[0].(domain.BookDetails)
+	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
@@ -79,7 +79,7 @@ func (mr *MockBookMockRecorder) Read(ctx, bookID interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockBook) Update(ctx context.Context, book domain.BookDetail) error {
+func (m *MockBook) Update(ctx context.Context, book domain.BookDetails) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", ctx, book)
 	ret0, _ := ret[0].(error)

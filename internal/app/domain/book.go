@@ -17,11 +17,11 @@ func (s *bookService) Create(ctx context.Context, book NewBook) error {
 	return nil
 }
 
-func (s *bookService) Read(ctx context.Context, bookID string) (error, BookDetail) {
-	return nil, BookDetail{}
+func (s *bookService) Read(ctx context.Context, bookID string) (BookDetails, error) {
+	return BookDetails{}, nil
 }
 
-func (s *bookService) Update(ctx context.Context, book BookDetail) error {
+func (s *bookService) Update(ctx context.Context, book BookDetails) error {
 	return nil
 }
 

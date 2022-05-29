@@ -80,3 +80,203 @@ func TestCreateNewBook_Table(t *testing.T) {
 		})
 	}
 }
+
+func TestReadNewBook_Table(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	tests := []struct {
+		name           string
+		bookID         string
+		wantStatusCode int
+	}{
+		{
+			name:           "number 1 ID",
+			bookID:         "1",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "test ID",
+			bookID:         "test",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "empty ID",
+			bookID:         "",
+			wantStatusCode: http.StatusNotFound,
+		},
+		{
+			name:           "UUID format",
+			bookID:         "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
+			wantStatusCode: http.StatusOK,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook.EXPECT().Read(gomock.Any(), gomock.Any()).AnyTimes()
+
+			handler := NewHttpHandler(mockBook)
+
+			req, err := http.NewRequest(
+				http.MethodGet,
+				"/v1/books/"+tt.bookID,
+				nil,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			router := mux.NewRouter()
+			router.HandleFunc("/v1/books/{id}", handler.Read).Methods("GET")
+			router.ServeHTTP(rr, req)
+
+			if rr.Code != tt.wantStatusCode {
+				t.Fatal(rr.Body.String())
+			}
+		})
+	}
+}
+
+func TestUpdateNewBook_Table(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	tests := []struct {
+		name           string
+		bookID         string
+		book           BookDetails
+		wantStatusCode int
+	}{
+		{
+			name:   "number 1 ID and complete book",
+			bookID: "1",
+			book: BookDetails{
+				Title:  "title",
+				Author: "author",
+				Pages:  0,
+			},
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:   "test ID and only title",
+			bookID: "test",
+			book: BookDetails{
+				Title: "title",
+			},
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:   "empty ID and title",
+			bookID: "",
+			book: BookDetails{
+				Title: "title",
+			},
+			wantStatusCode: http.StatusNotFound,
+		},
+		{
+			name:   "UUID format and incomplete author",
+			bookID: "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
+			book: BookDetails{
+				Title:  "title",
+				Author: "au",
+			},
+			wantStatusCode: http.StatusBadRequest,
+		},
+		{
+			name:           "UUID format and empty book",
+			bookID:         "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
+			book:           BookDetails{},
+			wantStatusCode: http.StatusBadRequest,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook.EXPECT().Update(gomock.Any(), gomock.Any()).AnyTimes()
+
+			handler := NewHttpHandler(mockBook)
+			payload, _ := json.Marshal(tt.book)
+
+			req, err := http.NewRequest(
+				http.MethodPatch,
+				"/v1/books/"+tt.bookID,
+				bytes.NewBuffer(payload),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			router := mux.NewRouter()
+			router.HandleFunc("/v1/books/{id}", handler.Update).Methods("PATCH")
+			router.ServeHTTP(rr, req)
+
+			if rr.Code != tt.wantStatusCode {
+				t.Fatal(rr.Body.String())
+			}
+		})
+	}
+}
+
+func TestDeleteNewBook_Table(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	tests := []struct {
+		name           string
+		bookID         string
+		wantStatusCode int
+	}{
+		{
+			name:           "number 1 ID",
+			bookID:         "1",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "test ID",
+			bookID:         "test",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "empty ID",
+			bookID:         "",
+			wantStatusCode: http.StatusNotFound,
+		},
+		{
+			name:           "UUID format",
+			bookID:         "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
+			wantStatusCode: http.StatusOK,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook.EXPECT().Delete(gomock.Any(), gomock.Any()).AnyTimes()
+
+			handler := NewHttpHandler(mockBook)
+
+			req, err := http.NewRequest(
+				http.MethodDelete,
+				"/v1/books/"+tt.bookID,
+				nil,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			router := mux.NewRouter()
+			router.HandleFunc("/v1/books/{id}", handler.Delete).Methods("DELETE")
+			router.ServeHTTP(rr, req)
+
+			if rr.Code != tt.wantStatusCode {
+				t.Fatal(rr.Body.String())
+			}
+		})
+	}
+}
