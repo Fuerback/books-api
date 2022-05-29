@@ -21,7 +21,7 @@ func NewHttpHandler(bookService domain.Book) BooksHandler {
 
 func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {
 	resp.Header().Set("Content-type", "application/json")
-	var book NewBook
+	book := new(NewBook)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Println("handling BookCreation")
@@ -29,7 +29,7 @@ func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(book)
 	if err != nil {
 		resp.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(resp).Encode(errors.NewError("error unmarshalling the request"))
+		json.NewEncoder(resp).Encode(errors.NewError("error unmarshalling the request - " + err.Error()))
 		log.Println("BookCreation - error unmarshalling the request")
 		return
 	}

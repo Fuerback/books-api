@@ -4,8 +4,8 @@ import "github.com/Fuerback/books-api/internal/app/domain"
 
 type NewBook struct {
 	Title  string `json:"title" validate:"required,gte=3"`
-	Author string `json:"author" validate:"gte=3"`
-	Pages  int    `json:"pages" validate:"gte=1"`
+	Author string `json:"author" validate:"omitempty,gte=3"`
+	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
 }
 
 type BookDetails struct {
