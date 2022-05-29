@@ -14,17 +14,28 @@ func NewService(repo repository.Book) Book {
 }
 
 func (s *bookService) Create(ctx context.Context, book NewBook) error {
-	return nil
+	return s.repo.Create(ctx, book.newBookToDomain())
 }
 
 func (s *bookService) Read(ctx context.Context, bookID string) (BookDetails, error) {
-	return BookDetails{}, nil
+	book, err := s.repo.Read(ctx, bookID)
+	if err != nil {
+		return BookDetails{}, err
+	}
+
+	bookDetails := BookDetails{
+		ID:     book.ID,
+		Title:  book.Title,
+		Author: book.Author,
+		Pages:  book.Pages,
+	}
+	return bookDetails, nil
 }
 
 func (s *bookService) Update(ctx context.Context, book BookDetails) error {
-	return nil
+	return s.repo.Update(ctx, book.bookDetailsToDomain())
 }
 
 func (s *bookService) Delete(ctx context.Context, bookID string) error {
-	return nil
+	return s.repo.Delete(ctx, bookID)
 }
