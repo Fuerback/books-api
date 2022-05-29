@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"github.com/Fuerback/books-api/internal/app/adapter/repository"
 	"github.com/google/uuid"
 )
 
@@ -15,7 +14,7 @@ func NewSqlite3() DB {
 	return &sqlite3{}
 }
 
-func (s *sqlite3) CreateNewBook(ctx context.Context, book repository.NewBook) (string, error) {
+func (s *sqlite3) CreateNewBook(ctx context.Context, book NewBook) (string, error) {
 	err := s.connectDatabase()
 	defer s.DB.Close()
 	if err != nil {
@@ -43,28 +42,29 @@ func (s *sqlite3) CreateNewBook(ctx context.Context, book repository.NewBook) (s
 
 	return bookID, nil
 }
-func (s *sqlite3) FindBook(ctx context.Context, bookID string) (repository.BookDetails, error) {
+func (s *sqlite3) FindBook(ctx context.Context, bookID string) (BookDetails, error) {
 	err := s.connectDatabase()
 	defer s.DB.Close()
 	if err != nil {
-		return repository.BookDetails{}, err
+		return BookDetails{}, err
 	}
 
 	stmt, err := s.DB.PrepareContext(ctx, "select * from book where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {
-		return repository.BookDetails{}, err
+		return BookDetails{}, err
 	}
 
-	book := repository.BookDetails{}
+	book := BookDetails{}
 	err = stmt.QueryRow(bookID).Scan(&book.ID, &book.Title, &book.Author, &book.Pages)
 	if err != nil {
-		return repository.BookDetails{}, err
+		return BookDetails{}, err
 	}
 
 	return book, nil
 }
-func (s *sqlite3) UpdateBook(ctx context.Context, book repository.NewBook) error {
+
+func (s *sqlite3) UpdateBook(ctx context.Context, book BookDetails) error {
 	err := s.connectDatabase()
 	defer s.DB.Close()
 	if err != nil {
@@ -82,8 +82,7 @@ func (s *sqlite3) UpdateBook(ctx context.Context, book repository.NewBook) error
 		return err
 	}
 
-	bookID := uuid.NewString()
-	_, err = stmt.ExecContext(ctx, book.Title, book.Author, book.Pages, bookID)
+	_, err = stmt.ExecContext(ctx, book.Title, book.Author, book.Pages, book.ID)
 	if err != nil {
 		tx.Rollback()
 		return err

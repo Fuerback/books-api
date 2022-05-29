@@ -13,7 +13,7 @@ func NewService(repo repository.RepoBook) Book {
 	return &bookService{repo: repo}
 }
 
-func (s *bookService) Create(ctx context.Context, book NewBook) error {
+func (s *bookService) Create(ctx context.Context, book NewBook) (string, error) {
 	return s.repo.Create(ctx, book.newBookToDomain())
 }
 

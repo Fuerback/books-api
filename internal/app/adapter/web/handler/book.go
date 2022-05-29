@@ -49,7 +49,7 @@ func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.bookService.Create(ctx, book.newBookToDomain())
+	_, err = c.bookService.Create(ctx, book.newBookToDomain())
 	if err != nil {
 		resp.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(resp).Encode(errors.NewError("error creating book - " + err.Error()))

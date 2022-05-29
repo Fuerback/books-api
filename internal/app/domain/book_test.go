@@ -3,7 +3,6 @@ package domain
 import (
 	"context"
 	"github.com/Fuerback/books-api/internal/app/adapter/repository"
-	"github.com/Fuerback/books-api/internal/app/adapter/repository/mocks"
 	"github.com/golang/mock/gomock"
 	"testing"
 )
@@ -50,11 +49,11 @@ func TestCreateNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockRepoBook(mockCtrl)
-			mockBook.EXPECT().Create(gomock.Any(), gomock.Any()).AnyTimes()
+			mockBook := repository.NewMockRepoBook(mockCtrl)
+			mockBook.EXPECT().Create(gomock.Any(), gomock.Any()).AnyTimes().Return("id", nil)
 
-			service := NewService(repository.NewBookRepository())
-			err := service.Create(context.Background(), tt.newBook)
+			service := NewService(mockBook)
+			_, err := service.Create(context.Background(), tt.newBook)
 
 			if err != tt.wantError {
 				t.Fatal(err.Error())
@@ -95,10 +94,10 @@ func TestReadNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockRepoBook(mockCtrl)
+			mockBook := repository.NewMockRepoBook(mockCtrl)
 			mockBook.EXPECT().Read(gomock.Any(), gomock.Any()).AnyTimes().Return(repository.BookDetails{Title: "example"}, nil)
 
-			service := NewService(repository.NewBookRepository())
+			service := NewService(mockBook)
 			_, err := service.Read(context.Background(), tt.bookID)
 
 			if err != tt.wantError {
@@ -150,10 +149,10 @@ func TestUpdateNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockRepoBook(mockCtrl)
+			mockBook := repository.NewMockRepoBook(mockCtrl)
 			mockBook.EXPECT().Update(gomock.Any(), gomock.Any()).AnyTimes()
 
-			service := NewService(repository.NewBookRepository())
+			service := NewService(mockBook)
 			err := service.Update(context.Background(), tt.newBook)
 
 			if err != tt.wantError {
@@ -195,10 +194,10 @@ func TestDeleteNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockRepoBook(mockCtrl)
+			mockBook := repository.NewMockRepoBook(mockCtrl)
 			mockBook.EXPECT().Delete(gomock.Any(), gomock.Any()).AnyTimes()
 
-			service := NewService(repository.NewBookRepository())
+			service := NewService(mockBook)
 			err := service.Delete(context.Background(), tt.bookID)
 
 			if err != tt.wantError {

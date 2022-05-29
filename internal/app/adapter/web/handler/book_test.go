@@ -3,7 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/Fuerback/books-api/internal/app/domain/mocks"
+	"github.com/Fuerback/books-api/internal/app/domain"
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -53,7 +53,7 @@ func TestCreateNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook := domain.NewMockBook(mockCtrl)
 			mockBook.EXPECT().Create(gomock.Any(), gomock.Any()).AnyTimes()
 
 			handler := NewHttpHandler(mockBook)
@@ -113,7 +113,7 @@ func TestReadNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook := domain.NewMockBook(mockCtrl)
 			mockBook.EXPECT().Read(gomock.Any(), gomock.Any()).AnyTimes()
 
 			handler := NewHttpHandler(mockBook)
@@ -194,7 +194,7 @@ func TestUpdateNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook := domain.NewMockBook(mockCtrl)
 			mockBook.EXPECT().Update(gomock.Any(), gomock.Any()).AnyTimes()
 
 			handler := NewHttpHandler(mockBook)
@@ -254,7 +254,7 @@ func TestDeleteNewBook_Table(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockBook := mocks.NewMockBook(mockCtrl)
+			mockBook := domain.NewMockBook(mockCtrl)
 			mockBook.EXPECT().Delete(gomock.Any(), gomock.Any()).AnyTimes()
 
 			handler := NewHttpHandler(mockBook)
