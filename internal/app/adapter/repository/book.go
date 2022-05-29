@@ -8,7 +8,7 @@ type bookRepository struct {
 	// db injection
 }
 
-func NewBookRepository() Book {
+func NewBookRepository() RepoBook {
 	return &bookRepository{}
 }
 
