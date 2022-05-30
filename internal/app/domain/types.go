@@ -10,9 +10,9 @@ type NewBook struct {
 
 type BookDetails struct {
 	ID     string
-	Title  string
-	Author string
-	Pages  int
+	Title  *string
+	Author *string
+	Pages  *int
 }
 
 func (u NewBook) newBookToDomain() repository.NewBook {
