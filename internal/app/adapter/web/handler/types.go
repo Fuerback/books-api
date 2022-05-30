@@ -8,6 +8,10 @@ type NewBook struct {
 	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
 }
 
+type BookID struct {
+	ID string `json:"id"`
+}
+
 type BookDetails struct {
 	ID     string `json:"_"`
 	Title  string `json:"title" validate:"required,gte=3"`

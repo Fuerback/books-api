@@ -49,14 +49,24 @@ func (c *httpHandler) Create(resp http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = c.bookService.Create(ctx, book.newBookToDomain())
+	id, err := c.bookService.Create(ctx, book.newBookToDomain())
 	if err != nil {
 		resp.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(resp).Encode(errors.NewError("error creating book - " + err.Error()))
 		log.Println("BookCreation finished with StatusInternalServerError")
 	}
 
+	bookID := BookID{ID: id}
+
+	result, err := json.Marshal(bookID)
+	if err != nil {
+		resp.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(resp).Encode(errors.NewError("error marshaling book result - " + err.Error()))
+		return
+	}
+
 	resp.WriteHeader(http.StatusCreated)
+	resp.Write(result)
 	log.Println("BookCreation finished")
 }
 

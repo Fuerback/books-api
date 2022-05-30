@@ -7,6 +7,7 @@ import (
 	"github.com/Fuerback/books-api/internal/app/domain"
 	"github.com/Fuerback/books-api/internal/app/infrastructure/db"
 	"github.com/Fuerback/books-api/internal/app/infrastructure/server"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
