@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"database/sql"
+
 	"github.com/google/uuid"
 )
 
@@ -121,7 +122,7 @@ func (s *sqlite3) DeleteBook(ctx context.Context, bookID string) error {
 }
 
 func (s *sqlite3) connectDatabase() error {
-	db, err := sql.Open("sqlite3", "./book.db")
+	db, err := sql.Open("sqlite3", "./skael_db.db")
 	if err != nil {
 		return err
 	}
