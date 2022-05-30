@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"github.com/Fuerback/books-api/internal/app/adapter/errors"
 	"github.com/Fuerback/books-api/internal/app/domain"
@@ -84,11 +85,17 @@ func (c *httpHandler) Read(resp http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO: could be used a cache memory here
 	book, err := c.bookService.Read(ctx, ID)
 	if err != nil {
-		resp.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(resp).Encode(errors.NewError("error reading book - " + err.Error()))
-		log.Println("BookReading finished with StatusInternalServerError")
+		if err == sql.ErrNoRows {
+			resp.WriteHeader(http.StatusNotFound)
+		} else {
+			resp.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(resp).Encode(errors.NewError("error reading book - " + err.Error()))
+		}
+		log.Println("BookReading finished")
+		return
 	}
 
 	result, err := json.Marshal(book)

@@ -50,7 +50,7 @@ func (s *sqlite3) FindBook(ctx context.Context, bookID string) (BookDetails, err
 		return BookDetails{}, err
 	}
 
-	stmt, err := s.DB.PrepareContext(ctx, "select * from book where id = ? and deleted = 0")
+	stmt, err := s.DB.PrepareContext(ctx, "select id, title, author, pages from book where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {
 		return BookDetails{}, err
@@ -77,6 +77,7 @@ func (s *sqlite3) UpdateBook(ctx context.Context, book BookDetails) error {
 		return err
 	}
 
+	// TODO: update only sent fields
 	stmt, err := tx.PrepareContext(ctx, "update book set title = ?, author = ?, pages = ? where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {

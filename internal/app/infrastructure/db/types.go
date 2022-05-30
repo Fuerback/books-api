@@ -7,8 +7,9 @@ type NewBook struct {
 }
 
 type BookDetails struct {
-	ID     string
-	Title  string
-	Author string
-	Pages  int
+	ID      string
+	Title   string
+	Author  string
+	Pages   int
+	Deleted bool
 }
