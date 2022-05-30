@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
@@ -13,7 +14,7 @@ var (
 )
 
 func init() {
-	dbName := "./skael_test_db"
+	dbName := "../../../../skael_test_db"
 	repo = NewBookRepository(dbName)
 	clearUp(dbName)
 }
