@@ -1,6 +1,15 @@
 # Books-api
 
-The project is a Golang REST API that uses gorilla/mux as router framework, SQLite as a database and Docker to build.
+The project is a CRUD Golang REST API that uses gorilla/mux as router framework, SQLite as a database and Docker to build.
+
+## TODO
+
+- Work with docker-compose
+- Create a gRpc for internal usage
+- Add audit columns in DB
+- Fix update book route to update only the fields sent
+- Create more unit and integration tests to cover more scenarios
+- Work with idempotent routes
 
 # Getting started
 
@@ -45,3 +54,4 @@ make docker-tests
 ## Documentation
 
 The API documentation is on [./docs/openapi/swagger.yaml](https://github.com/Fuerback/books-api/blob/main/docs/openapi/swagger.yaml)
+The database schema is on [./docs/db/schema_v1.sql](https://github.com/Fuerback/books-api/blob/main/docs/db/schema_v1.sql)
