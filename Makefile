@@ -1,4 +1,4 @@
-img := books-api
+img := books
 
 docker-up: build docker-image docker-run
 
@@ -15,7 +15,7 @@ run-local:
 	go run .
 
 build:
-	go build .
+	go build
 
 run-tests:
 	go test ./... -cover
