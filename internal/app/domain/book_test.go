@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Fuerback/books-api/internal/app/adapter/repository"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -55,14 +56,12 @@ func TestCreateNewBook_Table(t *testing.T) {
 			service := NewService(mockBook)
 			_, err := service.Create(context.Background(), tt.newBook)
 
-			if err != tt.wantError {
-				t.Fatal(err.Error())
-			}
+			assert.Equal(t, tt.wantError, err)
 		})
 	}
 }
 
-func TestReadNewBook_Table(t *testing.T) {
+func TestReadBook_Table(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -100,14 +99,55 @@ func TestReadNewBook_Table(t *testing.T) {
 			service := NewService(mockBook)
 			_, err := service.Read(context.Background(), tt.bookID)
 
-			if err != tt.wantError {
-				t.Fatal(err.Error())
-			}
+			assert.Equal(t, tt.wantError, err)
 		})
 	}
 }
 
-func TestUpdateNewBook_Table(t *testing.T) {
+func TestReadBooks_Table(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	tests := []struct {
+		name      string
+		filters   BooksFilter
+		wantError error
+	}{
+		{
+			name:      "page and perPage",
+			filters:   BooksFilter{Page: 0, PerPage: 10},
+			wantError: nil,
+		},
+		{
+			name:      "page, perpage, title and author",
+			filters:   BooksFilter{Page: 0, PerPage: 10, Title: "test", Author: "author"},
+			wantError: nil,
+		},
+		{
+			name:      "empty",
+			filters:   BooksFilter{},
+			wantError: nil,
+		},
+		{
+			name:      "title",
+			filters:   BooksFilter{Title: "title"},
+			wantError: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockBook := repository.NewMockRepoBook(mockCtrl)
+			mockBook.EXPECT().ReadBooks(gomock.Any(), gomock.Any()).AnyTimes().Return([]repository.BookDetails{}, nil)
+
+			service := NewService(mockBook)
+			_, err := service.ReadBooks(context.Background(), tt.filters)
+
+			assert.Equal(t, tt.wantError, err)
+		})
+	}
+}
+
+func TestUpdateBook_Table(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -155,9 +195,7 @@ func TestUpdateNewBook_Table(t *testing.T) {
 			service := NewService(mockBook)
 			err := service.Update(context.Background(), tt.newBook)
 
-			if err != tt.wantError {
-				t.Fatal(err.Error())
-			}
+			assert.Equal(t, tt.wantError, err)
 		})
 	}
 }
@@ -200,9 +238,7 @@ func TestDeleteNewBook_Table(t *testing.T) {
 			service := NewService(mockBook)
 			err := service.Delete(context.Background(), tt.bookID)
 
-			if err != tt.wantError {
-				t.Fatal(err.Error())
-			}
+			assert.Equal(t, tt.wantError, err)
 		})
 	}
 }

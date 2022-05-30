@@ -78,6 +78,21 @@ func (mr *MockRepoBookMockRecorder) Read(ctx, bookID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockRepoBook)(nil).Read), ctx, bookID)
 }
 
+// ReadBooks mocks base method.
+func (m *MockRepoBook) ReadBooks(ctx context.Context, bookFilter BooksFilter) ([]BookDetails, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadBooks", ctx, bookFilter)
+	ret0, _ := ret[0].([]BookDetails)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReadBooks indicates an expected call of ReadBooks.
+func (mr *MockRepoBookMockRecorder) ReadBooks(ctx, bookFilter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadBooks", reflect.TypeOf((*MockRepoBook)(nil).ReadBooks), ctx, bookFilter)
+}
+
 // Update mocks base method.
 func (m *MockRepoBook) Update(ctx context.Context, book BookDetails) error {
 	m.ctrl.T.Helper()

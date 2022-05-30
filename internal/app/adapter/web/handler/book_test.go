@@ -6,6 +6,7 @@ import (
 	"github.com/Fuerback/books-api/internal/app/domain"
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -64,9 +65,7 @@ func TestCreateNewBook_Table(t *testing.T) {
 				"/v1/books",
 				bytes.NewBuffer(payload),
 			)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.Nil(t, err)
 
 			rr := httptest.NewRecorder()
 
@@ -74,14 +73,12 @@ func TestCreateNewBook_Table(t *testing.T) {
 			router.HandleFunc("/v1/books", handler.Create).Methods("POST")
 			router.ServeHTTP(rr, req)
 
-			if rr.Code != tt.wantStatusCode {
-				t.Fatal(rr.Body.String())
-			}
+			assert.Equal(t, tt.wantStatusCode, rr.Code)
 		})
 	}
 }
 
-func TestReadNewBook_Table(t *testing.T) {
+func TestReadBook_Table(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -123,9 +120,7 @@ func TestReadNewBook_Table(t *testing.T) {
 				"/v1/books/"+tt.bookID,
 				nil,
 			)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.Nil(t, err)
 
 			rr := httptest.NewRecorder()
 
@@ -133,9 +128,67 @@ func TestReadNewBook_Table(t *testing.T) {
 			router.HandleFunc("/v1/books/{id}", handler.Read).Methods("GET")
 			router.ServeHTTP(rr, req)
 
-			if rr.Code != tt.wantStatusCode {
-				t.Fatal(rr.Body.String())
-			}
+			assert.Equal(t, tt.wantStatusCode, rr.Code)
+		})
+	}
+}
+
+func TestReadBooks_Table(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	tests := []struct {
+		name           string
+		params         string
+		wantStatusCode int
+	}{
+		{
+			name:           "page and perPage",
+			params:         "?page=0&perPage=10",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "title and author",
+			params:         "?title=test&author=test",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "page, perPage, title and author",
+			params:         "?page=0&perPage=10&title=test&author=test",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "empty",
+			params:         "",
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name:           "invalid",
+			params:         "unknown",
+			wantStatusCode: http.StatusNotFound,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockBook := domain.NewMockBook(mockCtrl)
+			mockBook.EXPECT().ReadBooks(gomock.Any(), gomock.Any()).AnyTimes()
+
+			handler := NewHttpHandler(mockBook)
+
+			req, err := http.NewRequest(
+				http.MethodGet,
+				"/v1/books"+tt.params,
+				nil,
+			)
+			assert.Nil(t, err)
+
+			rr := httptest.NewRecorder()
+
+			router := mux.NewRouter()
+			router.HandleFunc("/v1/books", handler.ReadBooks).Methods("GET")
+			router.ServeHTTP(rr, req)
+
+			assert.Equal(t, tt.wantStatusCode, rr.Code)
 		})
 	}
 }
@@ -205,9 +258,7 @@ func TestUpdateNewBook_Table(t *testing.T) {
 				"/v1/books/"+tt.bookID,
 				bytes.NewBuffer(payload),
 			)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.Nil(t, err)
 
 			rr := httptest.NewRecorder()
 
@@ -215,9 +266,7 @@ func TestUpdateNewBook_Table(t *testing.T) {
 			router.HandleFunc("/v1/books/{id}", handler.Update).Methods("PATCH")
 			router.ServeHTTP(rr, req)
 
-			if rr.Code != tt.wantStatusCode {
-				t.Fatal(rr.Body.String())
-			}
+			assert.Equal(t, tt.wantStatusCode, rr.Code)
 		})
 	}
 }
@@ -264,9 +313,7 @@ func TestDeleteNewBook_Table(t *testing.T) {
 				"/v1/books/"+tt.bookID,
 				nil,
 			)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.Nil(t, err)
 
 			rr := httptest.NewRecorder()
 
@@ -274,9 +321,7 @@ func TestDeleteNewBook_Table(t *testing.T) {
 			router.HandleFunc("/v1/books/{id}", handler.Delete).Methods("DELETE")
 			router.ServeHTTP(rr, req)
 
-			if rr.Code != tt.wantStatusCode {
-				t.Fatal(rr.Body.String())
-			}
+			assert.Equal(t, tt.wantStatusCode, rr.Code)
 		})
 	}
 }

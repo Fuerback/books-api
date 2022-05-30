@@ -35,6 +35,16 @@ func TestFindBook(t *testing.T) {
 	assert.NotNil(t, book)
 }
 
+func TestFindBooks(t *testing.T) {
+	_, err := repo.ReadBooks(context.Background(), BooksFilter{
+		Page:    0,
+		PerPage: 10,
+		Title:   "title",
+		Author:  "author",
+	})
+	assert.NoError(t, err)
+}
+
 func TestUpdateBook(t *testing.T) {
 	ID, err := repo.Create(context.Background(), NewBook{Title: "title"})
 	assert.NoError(t, err)

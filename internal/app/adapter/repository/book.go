@@ -14,7 +14,9 @@ type bookRepository struct {
 }
 
 func NewBookRepository(dbName string) RepoBook {
-	return &bookRepository{dbName: dbName}
+	repo := &bookRepository{dbName: dbName}
+	repo.ClearUp()
+	return repo
 }
 
 func (s *bookRepository) connectDatabase() error {
