@@ -19,6 +19,26 @@ type BookDetails struct {
 	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
 }
 
+type Books struct {
+	Page    int           `json:"page"`
+	PerPage int           `json:"perPage"`
+	Items   []BookDetails `json:"items"`
+}
+
+func domainBooksToHandlerBooks(books []domain.BookDetails) []BookDetails {
+	booksDetails := make([]BookDetails, 0)
+	for _, b := range books {
+		book := BookDetails{
+			ID:     b.ID,
+			Title:  b.Title,
+			Author: b.Author,
+			Pages:  b.Pages,
+		}
+		booksDetails = append(booksDetails, book)
+	}
+	return booksDetails
+}
+
 func (u NewBook) newBookToDomain() domain.NewBook {
 	return domain.NewBook{
 		Title:  u.Title,

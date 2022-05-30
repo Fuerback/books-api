@@ -15,6 +15,36 @@ type BookDetails struct {
 	Pages  int
 }
 
+type BooksFilter struct {
+	Page    int
+	PerPage int
+	Title   string
+	Author  string
+}
+
+func (u BooksFilter) newBookFiltersToDomain() repository.BooksFilter {
+	return repository.BooksFilter{
+		Page:    u.Page,
+		PerPage: u.PerPage,
+		Title:   u.Title,
+		Author:  u.Author,
+	}
+}
+
+func repoBooksToDomainBooks(books []repository.BookDetails) []BookDetails {
+	booksDetails := make([]BookDetails, 0)
+	for _, b := range books {
+		book := BookDetails{
+			ID:     b.ID,
+			Title:  b.Title,
+			Author: b.Author,
+			Pages:  b.Pages,
+		}
+		booksDetails = append(booksDetails, book)
+	}
+	return booksDetails
+}
+
 func (u NewBook) newBookToDomain() repository.NewBook {
 	return repository.NewBook{
 		Title:  u.Title,

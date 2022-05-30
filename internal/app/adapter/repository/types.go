@@ -12,3 +12,10 @@ type BookDetails struct {
 	Author string
 	Pages  int
 }
+
+type BooksFilter struct {
+	Page    int
+	PerPage int
+	Title   string
+	Author  string
+}

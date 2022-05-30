@@ -17,6 +17,15 @@ func (s *bookService) Create(ctx context.Context, book NewBook) (string, error) 
 	return s.repo.Create(ctx, book.newBookToDomain())
 }
 
+func (s *bookService) ReadBooks(ctx context.Context, bookFilter BooksFilter) ([]BookDetails, error) {
+	books, err := s.repo.ReadBooks(ctx, bookFilter.newBookFiltersToDomain())
+	if err != nil {
+		return nil, err
+	}
+
+	return repoBooksToDomainBooks(books), nil
+}
+
 func (s *bookService) Read(ctx context.Context, bookID string) (BookDetails, error) {
 	book, err := s.repo.Read(ctx, bookID)
 	if err != nil {

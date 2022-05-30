@@ -27,6 +27,10 @@ func (s *HttpServer) Run() {
 		s.handler.Create(resp, r)
 	})
 
+	s.router.GET("/v1/books", func(resp http.ResponseWriter, r *http.Request) {
+		s.handler.ReadBooks(resp, r)
+	})
+
 	s.router.PATCH("/v1/books/{id}", func(resp http.ResponseWriter, r *http.Request) {
 		s.handler.Update(resp, r)
 	})

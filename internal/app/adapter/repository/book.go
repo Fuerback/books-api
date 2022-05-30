@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/google/uuid"
 	"log"
 )
@@ -69,6 +70,47 @@ func (s *bookRepository) Create(ctx context.Context, book NewBook) (string, erro
 	tx.Commit()
 
 	return bookID, nil
+}
+
+func (s *bookRepository) ReadBooks(ctx context.Context, bookFilter BooksFilter) ([]BookDetails, error) {
+	err := s.connectDatabase()
+	defer s.dB.Close()
+	if err != nil {
+		return []BookDetails{}, err
+	}
+
+	filters := ""
+	params := []interface{}{}
+	if bookFilter.Title != "" {
+		filters += "and title=\"" + bookFilter.Title + "\""
+		params = append(params, bookFilter.Title)
+	}
+	if bookFilter.Author != "" {
+		filters += "and author=\"" + bookFilter.Author + "\""
+		params = append(params, bookFilter.Author)
+	}
+
+	params = append(params, bookFilter.PerPage)
+	params = append(params, bookFilter.Page)
+
+	query := fmt.Sprintf("select id, title, author, pages from book where deleted = 0 %s limit %d offset %d", filters, bookFilter.PerPage, bookFilter.Page)
+	rows, err := s.dB.QueryContext(ctx, query)
+	defer rows.Close()
+	if err != nil {
+		return []BookDetails{}, err
+	}
+
+	var result []BookDetails
+	for rows.Next() {
+		book := BookDetails{}
+		err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Pages)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, book)
+	}
+	return result, nil
 }
 
 func (s *bookRepository) Read(ctx context.Context, bookID string) (BookDetails, error) {

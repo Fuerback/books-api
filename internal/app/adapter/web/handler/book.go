@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -107,6 +108,54 @@ func (c *httpHandler) Read(resp http.ResponseWriter, r *http.Request) {
 	resp.WriteHeader(http.StatusOK)
 	resp.Write(result)
 	log.Println("BookReading finished")
+}
+
+func (c *httpHandler) ReadBooks(resp http.ResponseWriter, r *http.Request) {
+	resp.Header().Set("Content-type", "application/json")
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+
+	log.Println("handling BooksReading")
+
+	page, err := strconv.Atoi(r.FormValue("page"))
+	if err != nil {
+		page = 0
+	}
+	perPage, err := strconv.Atoi(r.FormValue("perPage"))
+	if err != nil {
+		perPage = 10
+	}
+	title := r.FormValue("title")
+	author := r.FormValue("author")
+
+	booksFilter := domain.BooksFilter{
+		Page:    page,
+		PerPage: perPage,
+		Title:   title,
+		Author:  author,
+	}
+
+	// TODO: could be used a cache memory here
+	books, err := c.bookService.ReadBooks(ctx, booksFilter)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			resp.WriteHeader(http.StatusNotFound)
+		} else {
+			resp.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(resp).Encode(errors.NewError("error reading book - " + err.Error()))
+		}
+		log.Println("BooksReading finished")
+		return
+	}
+
+	result, err := json.Marshal(domainBooksToHandlerBooks(books))
+	if err != nil {
+		resp.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(resp).Encode(errors.NewError("error marshaling book result - " + err.Error()))
+		return
+	}
+	resp.WriteHeader(http.StatusOK)
+	resp.Write(result)
+	log.Println("BooksReading finished")
 }
 
 func (c *httpHandler) Update(resp http.ResponseWriter, r *http.Request) {
