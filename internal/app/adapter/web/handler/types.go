@@ -13,7 +13,7 @@ type BookID struct {
 }
 
 type BookDetails struct {
-	ID     string `json:"_"`
+	ID     string `json:"id"`
 	Title  string `json:"title" validate:"required,gte=3"`
 	Author string `json:"author" validate:"omitempty,gte=3"`
 	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
