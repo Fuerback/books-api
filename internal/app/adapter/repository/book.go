@@ -4,24 +4,42 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
+	"log"
 )
 
 type bookRepository struct {
-	dB *sql.DB
+	dB     *sql.DB
+	dbName string
 }
 
-func NewBookRepository() RepoBook {
-	return &bookRepository{}
+func NewBookRepository(dbName string) RepoBook {
+	return &bookRepository{dbName: dbName}
 }
 
 func (s *bookRepository) connectDatabase() error {
-	db, err := sql.Open("sqlite3", "./skael_db")
+	db, err := sql.Open("sqlite3", s.dbName)
 	if err != nil {
 		return err
 	}
 
 	s.dB = db
 	return nil
+}
+
+func (s *bookRepository) ClearUp() error {
+	db, err := sql.Open("sqlite3", s.dbName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("delete from book")
+	tx.Commit()
+	return err
 }
 
 func (s *bookRepository) Create(ctx context.Context, book NewBook) (string, error) {

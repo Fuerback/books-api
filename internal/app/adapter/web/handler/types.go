@@ -13,10 +13,10 @@ type BookID struct {
 }
 
 type BookDetails struct {
-	ID     string  `json:"_"`
-	Title  *string `json:"title" validate:"required,gte=3"`
-	Author *string `json:"author" validate:"omitempty,gte=3"`
-	Pages  *int    `json:"pages" validate:"omitempty,gte=1"`
+	ID     string `json:"_"`
+	Title  string `json:"title" validate:"required,gte=3"`
+	Author string `json:"author" validate:"omitempty,gte=3"`
+	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
 }
 
 func (u NewBook) newBookToDomain() domain.NewBook {

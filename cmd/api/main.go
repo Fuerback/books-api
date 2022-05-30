@@ -11,8 +11,8 @@ import (
 
 func main() {
 	fmt.Println("Starting api server")
-	
-	repository := repository.NewBookRepository()
+
+	repository := repository.NewBookRepository("./skeal_db")
 	bookService := domain.NewService(repository)
 	httpHandler := handler.NewHttpHandler(bookService)
 
