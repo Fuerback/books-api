@@ -41,8 +41,8 @@ func (s *bookService) Read(ctx context.Context, bookID string) (BookDetails, err
 	return bookDetails, nil
 }
 
-func (s *bookService) Update(ctx context.Context, book BookDetails) error {
-	return s.repo.Update(ctx, book.bookDetailsToDomain())
+func (s *bookService) Update(ctx context.Context, bookID string, book UpdateBookDetails) error {
+	return s.repo.Update(ctx, bookID, book.bookDetailsToDomain())
 }
 
 func (s *bookService) Delete(ctx context.Context, bookID string) error {

@@ -200,55 +200,76 @@ func TestUpdateNewBook_Table(t *testing.T) {
 	tests := []struct {
 		name           string
 		bookID         string
-		book           BookDetails
+		book           UpdateBookDetails
 		wantStatusCode int
 	}{
 		{
 			name:   "number 1 ID and complete book",
 			bookID: "1",
-			book: BookDetails{
-				Title:  "title",
-				Author: "author",
-				Pages:  0,
+			book: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
+				Author: func() *string {
+					s := "author"
+					return &s
+				}(),
+				Pages: func() *int {
+					s := 1
+					return &s
+				}(),
 			},
 			wantStatusCode: http.StatusOK,
 		},
 		{
 			name:   "test ID and only title",
 			bookID: "test",
-			book: BookDetails{
-				Title: "title",
+			book: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
 			},
 			wantStatusCode: http.StatusOK,
 		},
 		{
 			name:   "empty ID and title",
 			bookID: "",
-			book: BookDetails{
-				Title: "title",
+			book: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
 			},
 			wantStatusCode: http.StatusNotFound,
 		},
 		{
 			name:   "UUID format and incomplete author",
 			bookID: "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
-			book: BookDetails{
-				Title:  "title",
-				Author: "au",
+			book: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
+				Author: func() *string {
+					s := "au"
+					return &s
+				}(),
 			},
 			wantStatusCode: http.StatusBadRequest,
 		},
 		{
 			name:           "UUID format and empty book",
 			bookID:         "837dcd08-26d7-4886-9a2e-c9827a6d68f0",
-			book:           BookDetails{},
-			wantStatusCode: http.StatusBadRequest,
+			book:           UpdateBookDetails{},
+			wantStatusCode: http.StatusOK,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockBook := domain.NewMockBook(mockCtrl)
-			mockBook.EXPECT().Update(gomock.Any(), gomock.Any()).AnyTimes()
+			mockBook.EXPECT().Update(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 			handler := NewHttpHandler(mockBook)
 			payload, _ := json.Marshal(tt.book)

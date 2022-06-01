@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Fuerback/books-api/internal/app/adapter/repository"
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -153,47 +154,94 @@ func TestUpdateBook_Table(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		newBook   BookDetails
+		bookID    string
+		newBook   UpdateBookDetails
 		wantError error
 	}{
 		{
-			name:      "only title",
-			newBook:   BookDetails{Title: "the book"},
+			name:   "only title",
+			bookID: uuid.NewString(),
+			newBook: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}()},
 			wantError: nil,
 		},
 		{
-			name:      "title and author",
-			newBook:   BookDetails{Title: "the book", Author: "author"},
+			name:   "title and author",
+			bookID: uuid.NewString(),
+			newBook: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
+				Author: func() *string {
+					s := "author"
+					return &s
+				}(),
+			},
 			wantError: nil,
 		},
 		{
-			name:      "title, author and pages",
-			newBook:   BookDetails{Title: "the book", Author: "author", Pages: 1},
+			name:   "title, author and pages",
+			bookID: uuid.NewString(),
+			newBook: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
+				Author: func() *string {
+					s := "author"
+					return &s
+				}(),
+				Pages: func() *int {
+					s := 0
+					return &s
+				}(),
+			},
 			wantError: nil,
 		},
 		{
-			name:      "author too few letters",
-			newBook:   BookDetails{Title: "the book", Author: "au"},
+			name:   "author too few letters",
+			bookID: uuid.NewString(),
+			newBook: UpdateBookDetails{
+				Title: func() *string {
+					s := "title"
+					return &s
+				}(),
+				Author: func() *string {
+					s := "au"
+					return &s
+				}(),
+			},
 			wantError: nil,
 		},
 		{
 			name:      "empty request",
-			newBook:   BookDetails{},
+			bookID:    uuid.NewString(),
+			newBook:   UpdateBookDetails{},
 			wantError: nil,
 		},
 		{
-			name:      "title few letters",
-			newBook:   BookDetails{Title: "a"},
+			name:   "title few letters",
+			bookID: uuid.NewString(),
+			newBook: UpdateBookDetails{
+				Title: func() *string {
+					s := "t"
+					return &s
+				}(),
+			},
 			wantError: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockBook := repository.NewMockRepoBook(mockCtrl)
-			mockBook.EXPECT().Update(gomock.Any(), gomock.Any()).AnyTimes()
+			mockBook.EXPECT().Update(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 			service := NewService(mockBook)
-			err := service.Update(context.Background(), tt.newBook)
+			err := service.Update(context.Background(), tt.bookID, tt.newBook)
 
 			assert.Equal(t, tt.wantError, err)
 		})

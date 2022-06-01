@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"log"
+	"reflect"
+	"strings"
 )
 
 type bookRepository struct {
@@ -137,7 +139,7 @@ func (s *bookRepository) Read(ctx context.Context, bookID string) (BookDetails, 
 	return book, nil
 }
 
-func (s *bookRepository) Update(ctx context.Context, book BookDetails) error {
+func (s *bookRepository) Update(ctx context.Context, bookID string, book UpdateBookDetails) error {
 	err := s.connectDatabase()
 	defer s.dB.Close()
 	if err != nil {
@@ -149,14 +151,14 @@ func (s *bookRepository) Update(ctx context.Context, book BookDetails) error {
 		return err
 	}
 
-	// TODO: update only sent fields
-	stmt, err := tx.PrepareContext(ctx, "update book set title = ?, author = ?, pages = ? where id = ? and deleted = 0")
+	fields, args := getFieldsAndParams(bookID, book)
+	stmt, err := tx.PrepareContext(ctx, "update book set "+fields+" where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.ExecContext(ctx, book.Title, book.Author, book.Pages, book.ID)
+	_, err = stmt.ExecContext(ctx, args...)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -164,6 +166,29 @@ func (s *bookRepository) Update(ctx context.Context, book BookDetails) error {
 	tx.Commit()
 
 	return nil
+}
+
+func getFieldsAndParams(bookID string, model interface{}) (string, []interface{}) {
+	values := reflect.ValueOf(model)
+	typeOfS := values.Type()
+	updateFields := ""
+	params := make([]interface{}, 0)
+
+	for i := 0; i < values.NumField(); i++ {
+		if !values.Field(i).IsNil() {
+			updateFields += strings.ToLower(typeOfS.Field(i).Name) + " = ?,"
+			params = append(params, values.Field(i).Interface())
+		}
+	}
+
+	if updateFields != "" {
+		// remove last comma
+		updateFields = updateFields[:len(updateFields)-1]
+	}
+
+	params = append(params, bookID)
+
+	return updateFields, params
 }
 
 func (s *bookRepository) Delete(ctx context.Context, bookID string) error {

@@ -126,7 +126,16 @@ func TestUpdateBook(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, recorder.Code)
 	assert.NotEmpty(t, bookID.ID)
 
-	payload, _ := json.Marshal(handler.BookDetails{Title: "title 2", Author: "author 2"})
+	payload, _ := json.Marshal(handler.UpdateBookDetails{
+		Title: func() *string {
+			s := "title"
+			return &s
+		}(),
+		Author: func() *string {
+			s := "author"
+			return &s
+		}(),
+	})
 	req, err = http.NewRequest(http.MethodPatch, "/v1/books/"+bookID.ID, bytes.NewBuffer(payload))
 	assert.Nil(t, err)
 

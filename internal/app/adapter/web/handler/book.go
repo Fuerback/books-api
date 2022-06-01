@@ -160,19 +160,18 @@ func (c *httpHandler) ReadBooks(resp http.ResponseWriter, r *http.Request) {
 
 func (c *httpHandler) Update(resp http.ResponseWriter, r *http.Request) {
 	resp.Header().Set("Content-type", "application/json")
-	book := new(BookDetails)
+	book := new(UpdateBookDetails)
 	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	log.Println("handling BookUpdating")
 
 	vars := mux.Vars(r)
-	ID := vars["id"]
-	if ID == "" {
+	bookID := vars["id"]
+	if bookID == "" {
 		resp.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(resp).Encode(errors.NewError("Invalid id parameter"))
 		return
 	}
-	book.ID = ID
 
 	err := json.NewDecoder(r.Body).Decode(book)
 	if err != nil {
@@ -196,7 +195,7 @@ func (c *httpHandler) Update(resp http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.bookService.Update(ctx, book.bookDetailToDomain())
+	err = c.bookService.Update(ctx, bookID, book.bookDetailToDomain())
 	if err != nil {
 		resp.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(resp).Encode(errors.NewError("error creating book - " + err.Error()))

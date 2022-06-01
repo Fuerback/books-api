@@ -13,6 +13,8 @@ var (
 	repo RepoBook
 )
 
+// TODO: create more scenarios
+
 func init() {
 	dbName := "../../../../skael_test_db"
 	repo = NewBookRepository(dbName)
@@ -49,11 +51,19 @@ func TestUpdateBook(t *testing.T) {
 	ID, err := repo.Create(context.Background(), NewBook{Title: "title"})
 	assert.NoError(t, err)
 
-	err = repo.Update(context.Background(), BookDetails{
-		ID:     ID,
-		Title:  "title 2",
-		Author: "author",
-		Pages:  3,
+	err = repo.Update(context.Background(), ID, UpdateBookDetails{
+		Title: func() *string {
+			s := "title 2"
+			return &s
+		}(),
+		Author: func() *string {
+			s := "author"
+			return &s
+		}(),
+		Pages: func() *int {
+			s := 3
+			return &s
+		}(),
 	})
 	assert.NoError(t, err)
 

@@ -13,6 +13,12 @@ type BookDetails struct {
 	Pages  int
 }
 
+type UpdateBookDetails struct {
+	Title  *string
+	Author *string
+	Pages  *int
+}
+
 type BooksFilter struct {
 	Page    int
 	PerPage int

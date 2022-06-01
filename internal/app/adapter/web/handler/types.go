@@ -19,6 +19,12 @@ type BookDetails struct {
 	Pages  int    `json:"pages" validate:"omitempty,gte=1"`
 }
 
+type UpdateBookDetails struct {
+	Title  *string `json:"title" validate:"omitempty,gte=3"`
+	Author *string `json:"author" validate:"omitempty,gte=3"`
+	Pages  *int    `json:"pages" validate:"omitempty,gte=1"`
+}
+
 type Books struct {
 	Page    int           `json:"page"`
 	PerPage int           `json:"perPage"`
@@ -47,9 +53,8 @@ func (u NewBook) newBookToDomain() domain.NewBook {
 	}
 }
 
-func (u BookDetails) bookDetailToDomain() domain.BookDetails {
-	return domain.BookDetails{
-		ID:     u.ID,
+func (u UpdateBookDetails) bookDetailToDomain() domain.UpdateBookDetails {
+	return domain.UpdateBookDetails{
 		Title:  u.Title,
 		Author: u.Author,
 		Pages:  u.Pages,

@@ -3,5 +3,4 @@ grpc
 
 p2p tests (postman)
 
-fix update route
 audit fields (db)

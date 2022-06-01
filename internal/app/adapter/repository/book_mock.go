@@ -94,15 +94,15 @@ func (mr *MockRepoBookMockRecorder) ReadBooks(ctx, bookFilter interface{}) *gomo
 }
 
 // Update mocks base method.
-func (m *MockRepoBook) Update(ctx context.Context, book BookDetails) error {
+func (m *MockRepoBook) Update(ctx context.Context, bookID string, book UpdateBookDetails) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, book)
+	ret := m.ctrl.Call(m, "Update", ctx, bookID, book)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockRepoBookMockRecorder) Update(ctx, book interface{}) *gomock.Call {
+func (mr *MockRepoBookMockRecorder) Update(ctx, bookID, book interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRepoBook)(nil).Update), ctx, book)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRepoBook)(nil).Update), ctx, bookID, book)
 }

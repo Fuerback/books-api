@@ -15,6 +15,12 @@ type BookDetails struct {
 	Pages  int
 }
 
+type UpdateBookDetails struct {
+	Title  *string
+	Author *string
+	Pages  *int
+}
+
 type BooksFilter struct {
 	Page    int
 	PerPage int
@@ -53,9 +59,8 @@ func (u NewBook) newBookToDomain() repository.NewBook {
 	}
 }
 
-func (u BookDetails) bookDetailsToDomain() repository.BookDetails {
-	return repository.BookDetails{
-		ID:     u.ID,
+func (u UpdateBookDetails) bookDetailsToDomain() repository.UpdateBookDetails {
+	return repository.UpdateBookDetails{
 		Title:  u.Title,
 		Author: u.Author,
 		Pages:  u.Pages,

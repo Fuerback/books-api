@@ -4,10 +4,10 @@ The project is a CRUD Golang REST API that uses gorilla/mux as router framework,
 
 ## TODO
 
+- Improve error handling
 - Work with docker-compose
 - Create a gRpc for internal usage
 - Add audit columns in DB
-- Fix update book route to update only the fields sent
 - Create more unit and integration tests to cover more scenarios
 - Work with idempotent routes
 
