@@ -2,9 +2,10 @@ package server
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/Fuerback/books-api/internal/app/adapter/web/handler"
 	"github.com/Fuerback/books-api/internal/app/infrastructure/env"
-	"net/http"
 )
 
 // HttpServer struct

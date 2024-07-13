@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"reflect"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type bookRepository struct {
@@ -22,7 +23,7 @@ func NewBookRepository(dbName string) RepoBook {
 }
 
 func (s *bookRepository) connectDatabase() error {
-	db, err := sql.Open("sqlite3", s.dbName)
+	db, err := sql.Open("mysql", s.dbName)
 	if err != nil {
 		return err
 	}
@@ -32,7 +33,7 @@ func (s *bookRepository) connectDatabase() error {
 }
 
 func (s *bookRepository) ClearUp() error {
-	db, err := sql.Open("sqlite3", s.dbName)
+	db, err := sql.Open("mysql", s.dbName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +60,7 @@ func (s *bookRepository) Create(ctx context.Context, book NewBook) (string, erro
 		return "", err
 	}
 
-	stmt, err := tx.PrepareContext(ctx, "insert into book(id, title, author, pages) values (?,?,?,?)")
+	stmt, err := tx.PrepareContext(ctx, "insert into books(id, title, author, pages) values (?,?,?,?)")
 	defer stmt.Close()
 	if err != nil {
 		return "", err
@@ -97,7 +98,7 @@ func (s *bookRepository) ReadBooks(ctx context.Context, bookFilter BooksFilter) 
 	params = append(params, bookFilter.PerPage)
 	params = append(params, bookFilter.Page)
 
-	query := fmt.Sprintf("select id, title, author, pages from book where deleted = 0 %s limit %d offset %d", filters, bookFilter.PerPage, bookFilter.Page)
+	query := fmt.Sprintf("select id, title, author, pages from books where deleted = 0 %s limit %d offset %d", filters, bookFilter.PerPage, bookFilter.Page)
 	rows, err := s.dB.QueryContext(ctx, query)
 	defer rows.Close()
 	if err != nil {
@@ -124,7 +125,7 @@ func (s *bookRepository) Read(ctx context.Context, bookID string) (BookDetails, 
 		return BookDetails{}, err
 	}
 
-	stmt, err := s.dB.PrepareContext(ctx, "select id, title, author, pages from book where id = ? and deleted = 0")
+	stmt, err := s.dB.PrepareContext(ctx, "select id, title, author, pages from books where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {
 		return BookDetails{}, err
@@ -152,7 +153,7 @@ func (s *bookRepository) Update(ctx context.Context, bookID string, book UpdateB
 	}
 
 	fields, args := getFieldsAndParams(bookID, book)
-	stmt, err := tx.PrepareContext(ctx, "update book set "+fields+" where id = ? and deleted = 0")
+	stmt, err := tx.PrepareContext(ctx, "update books set "+fields+" where id = ? and deleted = 0")
 	defer stmt.Close()
 	if err != nil {
 		return err
@@ -203,7 +204,7 @@ func (s *bookRepository) Delete(ctx context.Context, bookID string) error {
 		return err
 	}
 
-	stmt, err := tx.PrepareContext(ctx, "update book set deleted = 1 where id = ?")
+	stmt, err := tx.PrepareContext(ctx, "update books set deleted = 1 where id = ?")
 	defer stmt.Close()
 	if err != nil {
 		return err

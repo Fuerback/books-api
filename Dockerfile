@@ -15,4 +15,4 @@ EXPOSE 8080
 
 RUN go build
 
-CMD ["./books-api"]
+ENTRYPOINT ["./books-api"]

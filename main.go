@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/Fuerback/books-api/internal/app/adapter/repository"
 	"github.com/Fuerback/books-api/internal/app/adapter/web/handler"
 	"github.com/Fuerback/books-api/internal/app/domain"
@@ -12,7 +13,7 @@ import (
 func main() {
 	fmt.Println("Starting api server")
 
-	repository := repository.NewBookRepository("./skael_db")
+	repository := repository.NewBookRepository("root:books_db@tcp(db-mysql:3306)/books_db?charset=utf8mb4&parseTime=True&loc=Local")
 	bookService := domain.NewService(repository)
 	httpHandler := handler.NewHttpHandler(bookService)
 

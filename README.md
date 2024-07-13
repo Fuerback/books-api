@@ -1,55 +1,36 @@
 # Books-api
 
-The project is a CRUD Golang REST API that uses gorilla/mux as router framework, SQLite as a database and Docker to build.
+The project is a CRUD Golang REST API that uses gorilla/mux as router framework, MySQL as a database and Docker to build.
 
 ## TODO
 
 - Improve error handling
-- Work with docker-compose
 - Create a gRpc for internal usage
 - Add audit columns in DB
-- Create more unit and integration tests to cover more scenarios
+- Use testcontainers in e2e tests: example https://eltonminetto.dev/en/post/2024-02-15-using-test-helpers/
 - Work with idempotent routes
 
 # Getting started
 
 ## Locally
 
-To run project locally you need to export the environment variable `PORT=:8000` or to other port to your choice and. 
+To run project locally you need to export the environment variable `PORT=:8080` or to other port to your choice and. 
 You must have installed:
 
 - Golang >=1.17
-- SQLite3
-
-```shell
-make run-local
-```
+- MySQL >=5.7
 
 ```shell
 make run-tests
 ```
 
-## Docker
+## Docker Compose
 
 ```shell
-make build
-make docker-image
-make docker-run
-```
-
-or just
-
-```shell
-make docker-up
+make docker-compose
 ```
 
 The default PORT to test via Docker is `8080`
-
-to run **tests on Docker**:
-
-```shell
-make docker-tests
-```
 
 ## Documentation
 
